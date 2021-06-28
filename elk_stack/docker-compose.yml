@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  logstash:
+    container_name: logstash
+    image: docker.elastic.co/logstash/logstash:7.13.0
+    ports:
+      - 5140:5140/udp
+    volumes:
+      - ./logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./pipeline.conf:/usr/share/logstash/pipeline/logstash.conf
+    networks:
+      - elastic 
+
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.0
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - elastic 
+
+  kibana:
+    container_name: kibana 
+    image: docker.elastic.co/kibana/kibana:7.13.0
+    ports:
+      - 5601:5601/tcp
+    environment:
+        elasticsearch_hosts: http://elasticsearch:9200
+    networks:
+      - elastic 
+
+volumes:
+  elasticsearch_data:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge
+

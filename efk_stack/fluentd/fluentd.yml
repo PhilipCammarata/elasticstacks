@@ -1,0 +1,17 @@
+version: '3'
+
+networks:
+  efk_network:
+    driver: bridge
+
+services:
+  fluent-bit:
+    container_name: fluentd
+    image: fluent/fluentd:latest
+    volumes:
+      - ./:/fluentd/etc
+    ports:
+      - 5140:5140/udp
+    networks:
+      - efk_network 
+

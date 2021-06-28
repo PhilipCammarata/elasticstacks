@@ -1,0 +1,18 @@
+version: '3'
+
+networks:
+  efk_network:
+    driver: bridge
+
+services:
+  fluent-bit:
+    container_name: fluent-bit
+    image: fluent/fluent-bit:latest
+    volumes:
+      - ./fluent-bit.conf:/fluent-bit/etc/fluent-bit.conf
+      - ./parsers.conf:/fluent-bit/etc/parsers.conf
+    ports:
+      - 5140:5140/udp
+    networks:
+      - efk_network 
+
